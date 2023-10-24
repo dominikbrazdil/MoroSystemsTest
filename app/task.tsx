@@ -15,7 +15,7 @@ export default function Task({inputTask, updateTask, deleteTask}:
   const [task, setTask] = useState(inputTask);
   const [isEdit, setIsEdit] = useState(false);
 
-  function onTaskStateChange(state: boolean) {
+    function onTaskStateChange(state: boolean) {
     setTask({...task, isDone: state});
     updateTask({...task, isDone: state});
   }
@@ -43,7 +43,9 @@ export default function Task({inputTask, updateTask, deleteTask}:
           onChange={(e) => setTask({...task, description: e.target.value})}
           onBlur={e => saveTaskDescription()}
         /> :
-        <li onClick={() => setIsEdit(true)} className={'flex flex-row items-center'}>
+        <li onClick={() => setIsEdit(true)}
+            style={task.isDone ? {textDecoration: 'line-through', color: 'gray'} : {}}
+            className={'flex flex-row items-center'}>
           {task.description}
         </li>
       }

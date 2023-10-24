@@ -58,7 +58,7 @@ export default function TaskList() {
   }
 
   return (
-    <>
+    <div className={'flex flex-col gap-4 items-center m-10'}>
       <TaskInput createTask={addTask}/>
 
       <ul>
@@ -72,20 +72,22 @@ export default function TaskList() {
         )}
       </ul>
 
-      <span>Remaining tasks: { tasks.filter(t => !t.isDone).length }</span>
+      <div className={'flex flex-row gap-4 items-center'}>
+        <span>{tasks.filter(t => !t.isDone).length} tasks to go!</span>
 
-      <ToggleButtonGroup
-        color="primary"
-        value={filter}
-        exclusive
-        onChange={(e, filter) => onFilterChange(filter)}
-        aria-label="Filter"
-      >
-        <ToggleButton value={FilterOption.ALL}>All</ToggleButton>
-        <ToggleButton value={FilterOption.TODO}>TODO</ToggleButton>
-        <ToggleButton value={FilterOption.DONE}>Done</ToggleButton>
-      </ToggleButtonGroup>
-    </>
+        <ToggleButtonGroup
+          color="primary"
+          value={filter}
+          exclusive
+          onChange={(e, filter) => onFilterChange(filter)}
+          aria-label="Filter"
+        >
+          <ToggleButton value={FilterOption.ALL}>All</ToggleButton>
+          <ToggleButton value={FilterOption.TODO}>TODO</ToggleButton>
+          <ToggleButton value={FilterOption.DONE}>Done</ToggleButton>
+        </ToggleButtonGroup>
+      </div>
+    </div>
   );
 }
 
