@@ -4,6 +4,8 @@ import { Task as TaskModel } from './models/task';
 import Task from './task';
 import React, { useState } from 'react';
 import TaskInput from './task-input';
+import { ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { FilterOption } from './models/FilterOption';
 
 export default function TaskList() {
 
@@ -19,8 +21,22 @@ export default function TaskList() {
       isDone: true,
     }] as TaskModel[]);
 
+  const [filter, setFilter] = useState(FilterOption.ALL);
+
+  const [filteredTasks, setFilteredTasks] = useState(FilterOption.filterTasks(tasks, filter));
+
+  function onTasksChange(newTasks: TaskModel[]) {
+    setTasks(newTasks);
+    setFilteredTasks(FilterOption.filterTasks(newTasks, filter));
+  }
+
+  function onFilterChange(newFilter: FilterOption) {
+    setFilter(newFilter);
+    setFilteredTasks(FilterOption.filterTasks(tasks, newFilter));
+  }
+
   function updateTask(task: TaskModel, i: number) {
-    setTasks([
+    onTasksChange([
       ...tasks.slice(0, i),
       task,
       ...tasks.slice(i+1)
@@ -28,14 +44,14 @@ export default function TaskList() {
   }
 
   function deleteTask(i: number) {
-    setTasks([
+    onTasksChange([
       ...tasks.slice(0, i),
       ...tasks.slice(i+1)
     ]);
   }
 
   function addTask(task: TaskModel) {
-    setTasks([
+    onTasksChange([
       ...tasks,
       task
     ]);
@@ -46,7 +62,7 @@ export default function TaskList() {
       <TaskInput createTask={addTask}/>
 
       <ul>
-        {tasks.map((task, i) =>
+        {filteredTasks.map((task, i) =>
           <div key={task.creationDate.getTime()} className={'flex flex-row gap-2'}>
             <Task inputTask={task}
                   updateTask={(task: TaskModel) => updateTask(task, i)}
@@ -57,6 +73,20 @@ export default function TaskList() {
       </ul>
 
       <span>Remaining tasks: { tasks.filter(t => !t.isDone).length }</span>
+
+      <ToggleButtonGroup
+        color="primary"
+        value={filter}
+        exclusive
+        onChange={(e, filter) => onFilterChange(filter)}
+        aria-label="Filter"
+      >
+        <ToggleButton value={FilterOption.ALL}>All</ToggleButton>
+        <ToggleButton value={FilterOption.TODO}>TODO</ToggleButton>
+        <ToggleButton value={FilterOption.DONE}>Done</ToggleButton>
+      </ToggleButtonGroup>
     </>
   );
 }
+
+
